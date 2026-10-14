@@ -424,21 +424,25 @@ export default function RecordsApp() {
                         {formatTime(item.session.started_at)}
                       </div>
                       <div className="tx-actions">
+                        {/* 文字直接放进按钮：原来只有图标，屏幕上没有任何字，
+                            「编辑 / 删除」只活在 title 悬停框和 aria-label 里。 */}
                         <button
-                          className="btn-icon btn-sm"
+                          type="button"
+                          className="record-action"
                           onClick={() => setEditing(item.session)}
-                          aria-label={isFocusKind(item.session.kind) ? "编辑专注记录" : "编辑备注"}
                           title={isFocusKind(item.session.kind) ? "编辑专注记录" : "编辑备注"}
                         >
-                          <Pencil size={15} />
+                          <Pencil size={14} />
+                          编辑
                         </button>
                         <button
-                          className="btn-icon btn-sm"
+                          type="button"
+                          className="record-action record-action-danger"
                           onClick={() => handleDelete(item.session)}
-                          aria-label="删除记录"
-                          title="删除"
+                          title="删除这条记录（8 秒内可撤销）"
                         >
-                          <Trash2 size={15} />
+                          <Trash2 size={14} />
+                          删除
                         </button>
                       </div>
                     </div>

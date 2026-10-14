@@ -664,16 +664,47 @@ input {
   transition: opacity 0.15s ease;
 }
 
-/*
- * 记录行（`.record-row`）和记账行（`.tx-item`）共用这套操作按钮。
- * 只写 `.tx-item` 的话，专注/冥想那几行的编辑、删除按钮会永远停在 opacity: 0，
- * 看得见 tooltip 却看不到按钮——桌面端等于没有这个功能（窄屏靠下面「常显」那条兜着）。
- */
 .tx-item:hover .tx-actions,
-.tx-item:focus-within .tx-actions,
-.record-row:hover .tx-actions,
-.record-row:focus-within .tx-actions {
+.tx-item:focus-within .tx-actions {
   opacity: 1;
+}
+
+/*
+ * 记录页（专注/冥想/喝水）的操作按钮**常显**：这里曾是「看不见文字」的现场——
+ * 按钮原来只有图标，「编辑 / 删除」只活在悬停才出的 title 提示框里，屏幕上一个字都没有；
+ * 而显隐规则的选择器只写了 .tx-item（记账页的行），记录页的 .record-row 永远匹配不上，
+ * 桌面端等于没有这个功能。现在文字直接放进按钮，并且不再靠悬停才出现。
+ */
+.record-row .tx-actions {
+  opacity: 1;
+}
+
+.record-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--text-2);
+  font-size: 12px;
+  font-family: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.record-action:hover {
+  color: var(--text);
+  background: var(--surface-muted);
+}
+
+.record-action-danger:hover {
+  color: var(--expense);
 }
 
 .btn-sm {
