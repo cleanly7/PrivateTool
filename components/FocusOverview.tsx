@@ -144,10 +144,18 @@ export default function FocusOverview({
   }, [refreshKey]);
 
   const years = useMemo(() => focusYears(sessions), [sessions]);
+  /*
+   * 默认年份 = 有记录的最近一年（years 是降序的），不是「今年」。
+   * 刚过完年时今年可能一条记录都没有，默认停在今年会看到一整片空白，用户会以为数据没了。
+   * 这里在渲染期就派生出来，不走 useState + useEffect：数据到达后如果只靠 effect 纠偏，
+   * 会先拿「今年」算一次 summarizeFocusYear，闪一帧「这一年还没有专注记录」。
+   * years 为空（还没取到数据 / 一条专注记录都没有）时退回今年，反正在那之前不渲染热力图。
+   */
+  const activeYear = years.includes(year) ? year : (years[0] ?? year);
   const allTime = useMemo(() => summarizeFocusAllTime(sessions), [sessions]);
   const heatmap = useMemo(
-    () => summarizeFocusYear(sessions, year),
-    [sessions, year],
+    () => summarizeFocusYear(sessions, activeYear),
+    [sessions, activeYear],
   );
   const expanded = useMemo(() => {
     if (expandedKey === null) return null;
@@ -159,22 +167,12 @@ export default function FocusOverview({
   /** 时间轴刻度只需要算一次，别在三行分类图里各算一遍。 */
   const monthAxisData = useMemo(() => monthAxis(heatmap.weeks), [heatmap]);
 
-  /**
-   * 默认年份 = 有记录的最近一年，不是「今年」。
-   * 刚过完年时今年可能一条记录都没有，默认停在今年会看到一整片空白，
-   * 用户会以为数据没了。
-   */
-  useEffect(() => {
-    if (years.length === 0) return;
-    setYear((current) => (years.includes(current) ? current : years[0]));
-  }, [years]);
-
   // 换年就把展开的那一周收起来：否则「高亮列」会指向另一年的日期。
   useEffect(() => {
     setExpandedKey(null);
-  }, [year]);
+  }, [activeYear]);
 
-  const yearIndex = years.indexOf(year);
+  const yearIndex = years.indexOf(activeYear);
   const totalSlices = subjectSlices(allTime.bySubject);
   const showAllTime = allTime.count > 0;
 
@@ -269,7 +267,7 @@ export default function FocusOverview({
                 >
                   <ChevronLeft size={16} />
                 </button>
-                <strong>{year} 年</strong>
+                <strong>{activeYear} 年</strong>
                 <button
                   type="button"
                   className="btn-icon btn-sm"
@@ -340,7 +338,7 @@ export default function FocusOverview({
                         <div
                           className="heatmap-cells"
                           role="group"
-                          aria-label={`${subject.label} ${year} 年每天专注时长，点某一列展开那一周`}
+                          aria-label={`${subject.label} ${activeYear} 年每天专注时长，点某一列展开那一周`}
                         >
                           <div className="heatmap-weekdays" aria-hidden>
                             {["一", "二", "三", "四", "五", "六", "日"].map(

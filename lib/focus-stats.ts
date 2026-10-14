@@ -348,7 +348,12 @@ export interface FocusYearHeatmap {
   year: number;
   /** 列 = 周（周一起始），行 = 周一…周日；不属于该年的日期为 null */
   weeks: (FocusHeatCell | null)[][];
-  maxDaySeconds: number; // 该年单日最大秒数（颜色缩放的基准）
+  /**
+   * 该年单日最大秒数（不分分类）。年度总览**不用它**做颜色缩放：那三行分类热力图
+   * 各自按「该分类这一年的单日最大值」归一化（共用全局最大值会让日语永远一片浅色）。
+   * 有测试钉着这个值，保留字段；周视图那边用的是 FocusWeekStat 自己的同名字段。
+   */
+  maxDaySeconds: number;
   totalSeconds: number; // 该年合计
   bySubject: SubjectSeconds; // 该年分类拆分
   activeDays: number; // 该年有记录的天数

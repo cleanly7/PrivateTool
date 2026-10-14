@@ -66,6 +66,24 @@ const TOAST_MS = 2500;
 /** 「先开始一段专注」这类提醒条的停留时间。 */
 const NOTICE_MS = 3000;
 
+/**
+ * 分心条目只按 `at`（ISO 时刻）认身份，所以同一毫秒里记两次会撞成一条。
+ * 系统时钟精度通常够，但连点/自动化测试能撞上；撞了就顺延 1 毫秒，时间显示看不出来。
+ */
+function normalizeDistractionAt(at: string, existing: DistractionInput[]): string {
+  const taken = new Set(existing.map((item) => item.at));
+  if (!taken.has(at)) return at;
+  const base = Date.parse(at);
+  if (!Number.isFinite(base)) return at;
+  let candidate = base;
+  let value = at;
+  while (taken.has(value)) {
+    candidate += 1;
+    value = new Date(candidate).toISOString();
+  }
+  return value;
+}
+
 type Status = "idle" | "running" | "paused";
 
 interface ReviewState {
@@ -115,7 +133,8 @@ export default function FocusSession({
   const [recentOpen, setRecentOpen] = useState(false);
   const [distractions, setDistractions] = useState<DistractionInput[]>([]);
   const [distractionToast, setDistractionToast] = useState<{
-    index: number;
+    /** 按「记下的时刻」认条目，不按数组下标：下标会随着删除往前挪。 */
+    at: string;
     count: number;
   } | null>(null);
   const [shortcutNotice, setShortcutNotice] = useState<string | null>(null);
@@ -139,6 +158,14 @@ export default function FocusSession({
    */
   const fired45Ref = useRef(false);
   const pendingFailedRef = useRef(false);
+  /** Esc 关弹窗走 ref 取最新的 discard，免得给那个 effect 挂一堆依赖。 */
+  const discardRef = useRef<() => void>(() => {});
+  /**
+   * 这一段累计记了几次分心，只增不减（删掉一条也不回退）。
+   * 用它而不是 `distractions.length` 报「第 N 次」：删掉一条再记一条时，
+   * 数组长度会回到同一个数字，用户会看到两条都写着「第 2 次」。
+   */
+  const distractionSeqRef = useRef(0);
   const triggerRef = useRef<() => void>(() => {});
   const recentRef = useRef<HTMLDivElement | null>(null);
 
@@ -169,8 +196,10 @@ export default function FocusSession({
       };
       try {
         localStorage.setItem(draftKey(kind), JSON.stringify(draft));
-      } catch {
-        // localStorage 写不进去不该拖累计时（隐私模式等），草稿只是尽力而为。
+      } catch (error) {
+        // 写不进去不该拖累计时（隐私模式 / 配额满），草稿只是尽力而为；
+        // 但失败是真事，留一条日志，别让「草稿丢了」变成无从查起的现象。
+        console.error("专注草稿写入 localStorage 失败", error);
       }
     },
     [kind],
@@ -258,6 +287,20 @@ export default function FocusSession({
   }, [recentOpen]);
 
   /**
+   * 结束弹窗：Esc = 丢弃这段（与其它 5 个弹窗一致）。
+   * 保存中不响应，避免在请求飞出去的时候把界面拆了。
+   */
+  useEffect(() => {
+    if (!review) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || saving) return;
+      discardRef.current();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [review, saving]);
+
+  /**
    * 最近用过的大标题：从记录里现算（不新增接口、不写 localStorage）。
    * 取不到时只是少了个便利入口，计时照常。
    */
@@ -270,8 +313,10 @@ export default function FocusSession({
         const data = (await response.json()) as { sessions?: SessionRecord[] };
         if (cancelled || !Array.isArray(data.sessions)) return;
         setRecentTitles(recentFocusTitles(data.sessions));
-      } catch {
-        // 「最近标题」是纯便利功能，网络/服务出问题时静默降级，不打扰正在专注的人。
+      } catch (error) {
+        // 「最近标题」是纯便利功能，网络/服务出问题时降级就好，不打扰正在专注的人；
+        // 但仍然记一条日志——静默 catch 会让「浮层里怎么老是空的」查不出原因。
+        console.error("读取最近标题失败", error);
       }
     })();
     return () => {
@@ -294,18 +339,23 @@ export default function FocusSession({
     const raw = localStorage.getItem(draftKey(kind));
     const legacyRaw = raw ? null : localStorage.getItem(LEGACY_DRAFT_KEY);
     let restored: CountUpDraft | null = null;
+    // 解析失败 = 我们看不懂这条草稿。看不懂不代表用户的时长不重要，
+    // 所以原地留着（绝不 removeItem），下次刷新还能再试；只记日志。
+    let draftUnreadable = false;
     if (raw || legacyRaw) {
       try {
         const parsed: unknown = JSON.parse(raw ?? legacyRaw ?? "");
         restored =
           readCountUpDraft(parsed) ?? countUpFromStoredTimer(parsed, Date.now());
-      } catch {
+      } catch (error) {
         restored = null;
+        draftUnreadable = true;
+        console.error("专注草稿解析失败，已原样保留（不删）", error);
       }
     }
-    if (legacyRaw) localStorage.removeItem(LEGACY_DRAFT_KEY);
+    if (legacyRaw && !draftUnreadable) localStorage.removeItem(LEGACY_DRAFT_KEY);
     if (!restored) {
-      if (raw) localStorage.removeItem(draftKey(kind));
+      if (raw && !draftUnreadable) localStorage.removeItem(draftKey(kind));
       const pending = readPendingRecord(kind);
       if (pending) {
         setReview({ ...pending, minutes: minutesForSave(pending.seconds) });
@@ -331,6 +381,8 @@ export default function FocusSession({
     if (restored.distractions.length > 0) {
       distractionsRef.current = restored.distractions;
       setDistractions(restored.distractions);
+      // 接着这段数：恢复以后新记的一条不该又叫「第 1 次」。
+      distractionSeqRef.current = restored.distractions.length;
     }
     if (restored.pending) {
       // 结束弹窗开着的时候被刷新了：原样打开，内容都在。
@@ -376,16 +428,40 @@ export default function FocusSession({
 
   // 已经在计时：大标题和分心随时写回草稿，关窗口/刷新都还在。
   // （还没开始的时候不写草稿——那会儿还没有「这一段」。）
+  // 结束弹窗开着的时候由下面那个 effect 负责（它要连弹窗里的编辑一起进草稿）。
   useEffect(() => {
     if (review || startedAtRef.current === null) return;
     persist(null);
   }, [planTitle, distractions, review, persist]);
+
+  /*
+   * 结束弹窗开着的时候，改标题 / 补原因 / 改分钟数同样要进草稿。
+   *
+   * 不这样就自相矛盾：弹窗上写着「内容和时长都留着，可以重试」，刷新一下却回退成
+   * 打开弹窗那一刻的快照（title 回退、补的原因全没）。`persist(review)` 会把弹窗里
+   * 的当前值一起写进去，同时保持 pendingFailed 不变。
+   */
+  useEffect(() => {
+    if (!review || startedAtRef.current === null) return;
+    const pending: PendingSave = {
+      startedAt: review.startedAt,
+      completedAt: review.completedAt,
+      seconds: Math.max(1, review.minutes * 60),
+      subject: review.subject,
+      note: review.note,
+      title: review.title.trim(),
+      distractions: review.distractions,
+    };
+    persist(pending, pendingFailedRef.current);
+  }, [review, persist]);
 
   const start = () => {
     if (status === "idle") {
       startedAtRef.current = new Date().toISOString();
       accumulatedMsRef.current = 0;
       fired45Ref.current = false;
+      // 新的「这一段」：序号从头数。
+      distractionSeqRef.current = 0;
     }
     runStartedAtRef.current = Date.now();
     setStatus("running");
@@ -486,6 +562,8 @@ export default function FocusSession({
     setReview(null);
     setDistractions([]);
     distractionsRef.current = [];
+    distractionSeqRef.current = 0;
+    setDistractionToast(null);
     setPlanTitle("");
     titleRef.current = "";
     setMarkNotice(null);
@@ -508,7 +586,15 @@ export default function FocusSession({
     setMarkNotice(null);
     setDistractions([]);
     distractionsRef.current = [];
+    distractionSeqRef.current = 0;
+    setDistractionToast(null);
   };
+
+  // Esc 监听用 ref 取最新的 discard：那个 effect 只依赖 review/saving，不该因为
+  // discard 每次渲染换新引用而反复解绑重绑。
+  useEffect(() => {
+    discardRef.current = discard;
+  });
 
   const reset = () => {
     if (
@@ -529,6 +615,8 @@ export default function FocusSession({
     setMarkNotice(null);
     setDistractions([]);
     distractionsRef.current = [];
+    distractionSeqRef.current = 0;
+    setDistractionToast(null);
   };
 
   /**
@@ -547,14 +635,17 @@ export default function FocusSession({
       );
       return;
     }
-    const next: DistractionInput[] = [
-      ...distractionsRef.current,
-      { at: new Date().toISOString(), reason: "" },
-    ];
+    const entry: DistractionInput = {
+      at: normalizeDistractionAt(new Date().toISOString(), distractionsRef.current),
+      reason: "",
+    };
+    const next: DistractionInput[] = [...distractionsRef.current, entry];
     distractionsRef.current = next;
     setDistractions(next);
     setShortcutNotice(null);
-    setDistractionToast({ index: next.length - 1, count: next.length });
+    distractionSeqRef.current += 1;
+    // 记下的是这一条的「时刻」而不是下标：2.5 秒里别处删过条目的话，下标会挪位。
+    setDistractionToast({ at: entry.at, count: distractionSeqRef.current });
   }, [review]);
 
   /** ⌘⇧D：没有进行中的专注就只提示，不产生任何记录。 */
@@ -571,8 +662,13 @@ export default function FocusSession({
     triggerRef.current = triggerDistraction;
   }, [triggerDistraction]);
 
-  const removeDistractionAt = (index: number) => {
-    const next = distractionsRef.current.filter((_, item) => item !== index);
+  /**
+   * 删掉一次分心记录。**按「记下的时刻」认，不按数组下标**：toast 里的撤销按钮
+   * 拿到的是点击那一刻捕获的下标，2.5 秒内先删了更靠前的一条，那个下标就指向
+   * 别的条目——撤销会变成空操作，或者删掉一条根本不是它的记录。
+   */
+  const removeDistractionAt = (at: string) => {
+    const next = distractionsRef.current.filter((item) => item.at !== at);
     distractionsRef.current = next;
     setDistractions(next);
   };
@@ -736,7 +832,7 @@ export default function FocusSession({
           {formatClock(displayMs)}
         </div>
         <div className="timer-sub">
-          {displayMs > 0 ? `已连续 ${formatElapsed(displayMs)}` : "点开始，学到你自然停下来"}
+          {displayMs > 0 ? `已计时 ${formatElapsed(displayMs)}` : "点开始，学到你自然停下来"}
         </div>
       </div>
 
@@ -865,7 +961,7 @@ export default function FocusSession({
                 <button
                   type="button"
                   className="btn-icon"
-                  onClick={() => removeDistractionAt(index)}
+                  onClick={() => removeDistractionAt(item.at)}
                   aria-label="删掉这次分心记录"
                   title="删掉这次分心记录"
                 >
@@ -884,7 +980,7 @@ export default function FocusSession({
             type="button"
             className="toast-undo"
             onClick={() => {
-              removeDistractionAt(distractionToast.index);
+              removeDistractionAt(distractionToast.at);
               setDistractionToast(null);
             }}
           >
