@@ -664,8 +664,15 @@ input {
   transition: opacity 0.15s ease;
 }
 
+/*
+ * 记录行（`.record-row`）和记账行（`.tx-item`）共用这套操作按钮。
+ * 只写 `.tx-item` 的话，专注/冥想那几行的编辑、删除按钮会永远停在 opacity: 0，
+ * 看得见 tooltip 却看不到按钮——桌面端等于没有这个功能（窄屏靠下面「常显」那条兜着）。
+ */
 .tx-item:hover .tx-actions,
-.tx-item:focus-within .tx-actions {
+.tx-item:focus-within .tx-actions,
+.record-row:hover .tx-actions,
+.record-row:focus-within .tx-actions {
   opacity: 1;
 }
 
