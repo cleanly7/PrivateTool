@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   ChevronsLeft,
   ChevronsRight,
+  Droplets,
   Flower2,
   History,
   Timer,
@@ -13,22 +14,24 @@ import {
 
 import BookkeepingApp from "./BookkeepingApp";
 import MeditationApp from "./MeditationApp";
-import PomodoroApp from "./PomodoroApp";
+import FocusApp from "./FocusApp";
 import RecordsApp from "./RecordsApp";
+import WaterApp from "./WaterApp";
 
-type Tool = "bookkeeping" | "meditation" | "pomodoro" | "records";
+type Tool = "bookkeeping" | "meditation" | "pomodoro" | "records" | "water";
 
 const tabs: { id: Tool; label: string; icon: LucideIcon }[] = [
   { id: "bookkeeping", label: "记账", icon: Wallet },
   { id: "meditation", label: "冥想", icon: Flower2 },
-  { id: "pomodoro", label: "番茄钟", icon: Timer },
+  { id: "pomodoro", label: "专注时间", icon: Timer },
   { id: "records", label: "记录", icon: History },
+  { id: "water", label: "喝水", icon: Droplets },
 ];
 
 const SIDEBAR_KEY = "toolbox-sidebar-collapsed";
 
 export default function AppShell() {
-  const [tool, setTool] = useState<Tool>("bookkeeping");
+  const [tool, setTool] = useState<Tool>("records");
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
@@ -87,8 +90,9 @@ export default function AppShell() {
       <div className="app-main">
         {tool === "bookkeeping" && <BookkeepingApp />}
         {tool === "meditation" && <MeditationApp />}
-        {tool === "pomodoro" && <PomodoroApp />}
+        {tool === "pomodoro" && <FocusApp />}
         {tool === "records" && <RecordsApp />}
+        {tool === "water" && <WaterApp />}
       </div>
     </div>
   );

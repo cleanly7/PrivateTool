@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Clock3 } from "lucide-react";
 
 import { toLocalDateKey } from "@/lib/date";
+import { secondsToMinutes, sessionSeconds } from "@/lib/focus-stats";
 import type { SessionKind, SessionRecord } from "@/lib/types";
 
 export default function TodaySummary({
@@ -13,7 +14,7 @@ export default function TodaySummary({
   kind: SessionKind;
   refreshKey: number;
 }) {
-  const [summary, setSummary] = useState({ count: 0, minutes: 0 });
+  const [summary, setSummary] = useState({ count: 0, seconds: 0 });
 
   useEffect(() => {
     let active = true;
@@ -25,25 +26,25 @@ export default function TodaySummary({
         const sessions = (data.sessions ?? []).filter(
           (session) =>
             session.kind === kind &&
-            toLocalDateKey(session.completed_at) === today,
+            toLocalDateKey(session.started_at) === today,
         );
         setSummary({
           count: sessions.length,
-          minutes: sessions.reduce(
-            (sum, session) => sum + session.planned_minutes,
+          seconds: sessions.reduce(
+            (sum, session) => sum + sessionSeconds(session),
             0,
           ),
         });
       })
       .catch(() => {
-        if (active) setSummary({ count: 0, minutes: 0 });
+        if (active) setSummary({ count: 0, seconds: 0 });
       });
     return () => {
       active = false;
     };
   }, [kind, refreshKey]);
 
-  const label = kind === "meditation" ? "冥想" : "番茄钟";
+  const label = kind === "meditation" ? "冥想" : "专注";
 
   return (
     <div className="panel today-panel">
@@ -66,7 +67,7 @@ export default function TodaySummary({
             <Clock3 size={18} />
           </span>
           <div className="today-value">
-            <strong>{summary.minutes}</strong>
+            <strong>{secondsToMinutes(summary.seconds)}</strong>
             <span>分钟</span>
           </div>
         </div>

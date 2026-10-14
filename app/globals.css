@@ -1247,3 +1247,1126 @@ input {
     padding: 0;
   }
 }
+
+/* ===== 喝水 ===== */
+
+.water-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.water-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 26px 24px 22px;
+}
+
+.water-ring {
+  margin: 0;
+}
+
+.water-cups {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.water-cups span {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.drink-btn {
+  font-size: 17px;
+  padding: 13px 34px;
+  gap: 10px;
+}
+
+.water-status {
+  font-size: 13px;
+  color: var(--text-2);
+  margin: 0;
+  min-height: 18px;
+}
+
+.water-side {
+  min-width: 0;
+}
+
+.water-cat {
+  background: rgba(56, 189, 248, 0.14);
+  color: #38bdf8;
+}
+
+.water-toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 300px;
+  max-width: calc(100vw - 40px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+  padding: 14px 16px;
+  z-index: 100;
+}
+
+.water-toast-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 4px;
+}
+
+.water-toast-sub {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 12px;
+}
+
+.water-toast-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ---- 专注时间：科目选择、今日小时数、每周专注 ---- */
+
+.tool-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.focus-subject {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 10px;
+}
+
+.timer-note-field {
+  max-width: 360px;
+  margin: 0 auto 14px;
+  text-align: left;
+}
+
+.timer-note-field .field-label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.timer-note-field .timer-note {
+  max-width: none;
+  margin: 0;
+  text-align: left;
+  resize: vertical;
+}
+
+.focus-rows {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.focus-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+
+.focus-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.focus-row-main {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.focus-row-label {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.focus-row-hours {
+  margin-left: auto;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.focus-row-hours em {
+  margin-left: 2px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--text-3);
+}
+
+.focus-row-sub {
+  min-width: 62px;
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.focus-copy {
+  width: 100%;
+  justify-content: center;
+}
+
+.week-panel {
+  margin-top: 14px;
+}
+
+.week-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.week-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  min-width: 0;
+}
+
+.week-stat strong {
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.week-stat span {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.week-chart {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  align-items: end;
+}
+
+.week-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.week-col-value {
+  height: 14px;
+  font-size: 11px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.week-track {
+  width: 100%;
+  height: 120px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.week-fill {
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  transition: height 0.2s ease;
+}
+
+.week-seg {
+  display: block;
+  width: 100%;
+}
+
+.week-col.today .week-track {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent-soft);
+}
+
+.week-col-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.4;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.week-col-day em {
+  font-style: normal;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.week-col.today .week-col-day {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.week-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-item em {
+  font-style: normal;
+  color: var(--text-3);
+}
+
+.subject-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  margin-right: 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.week-notes {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.week-notes-title {
+  margin-bottom: 0;
+}
+
+.week-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 9px 11px;
+}
+
+.week-note-time {
+  font-size: 12px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.week-note .subject-badge {
+  margin-right: 0;
+}
+
+.week-note-minutes {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.week-note-text {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-2);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 860px) {
+  .water-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .week-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .week-track {
+    height: 96px;
+  }
+}
+
+/* ---------- 专注时间：正计时 ---------- */
+
+.timer-up {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 18px 0 10px;
+}
+
+.timer-clock {
+  font-size: 56px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  line-height: 1.05;
+}
+
+.timer-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 12px;
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  line-height: 1.5;
+  border: 1px solid transparent;
+}
+
+.timer-alert span {
+  flex: 1;
+  min-width: 0;
+}
+
+.timer-alert.ok {
+  background: rgba(14, 159, 110, 0.1);
+  border-color: rgba(14, 159, 110, 0.25);
+  color: #0b7a55;
+}
+
+.timer-alert.warn {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #9a6206;
+}
+
+.timer-alert.err {
+  background: rgba(229, 72, 77, 0.1);
+  border-color: rgba(229, 72, 77, 0.28);
+  color: #b4232a;
+}
+
+.duration-input {
+  width: 76px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.duration-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.duration-unit {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.field-hint {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------------ *
+ * 专注时间 · 迭代 2（大标题 / 分心 / 45 分钟刻度）
+ * ------------------------------------------------------------------ */
+
+.focus-title-row {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 14px;
+}
+
+.focus-title-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.focus-title-input .input {
+  flex: 1;
+  min-width: 0;
+}
+
+.recent-popover {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+}
+
+.recent-empty {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.chip {
+  max-width: 100%;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
+  color: var(--text-2);
+  font-size: 12px;
+  line-height: 1.6;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.chip.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 0–90 分钟刻度：45 与 90 各一个刻度点。到点只提醒，不打断计时。 */
+.timer-scale {
+  margin: 18px 0 0;
+}
+
+.timer-scale-track {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+}
+
+.timer-scale-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.4s linear;
+}
+
+.timer-tick {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--border);
+}
+
+.timer-scale-ticks {
+  position: relative;
+  height: 16px;
+  margin-top: 3px;
+}
+
+.timer-tick-label {
+  position: absolute;
+  font-size: 11px;
+  color: var(--text-3);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.timer-tick-label:last-child {
+  transform: translateX(-100%);
+}
+
+.timer-scale-hint {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--text-3);
+  text-align: center;
+}
+
+/* 分心：一次一条，原因可以事后补。 */
+.focus-distractions {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
+.focus-distraction-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.focus-distraction-count {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.focus-distraction-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.focus-distraction-empty {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.focus-distraction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.focus-distraction-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.focus-distraction-row .input {
+  flex: 1;
+  min-width: 0;
+}
+
+.focus-distraction-time {
+  flex: none;
+  min-width: 40px;
+  font-size: 12px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.kbd {
+  padding: 1px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+/* 「已记下第 N 次分心」——2.5 秒后自己消失，撤销按钮留在原地。 */
+.toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.toast-undo {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent-strong);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.toast-undo:hover {
+  text-decoration: underline;
+}
+
+.distraction-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 11px;
+  font-weight: 500;
+  vertical-align: middle;
+  /* 这个徽章是个按钮（点开补原因 / 删掉记错的那条），按钮的默认边框和字体要清掉。 */
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.today-distractions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.record-title {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.week-note-title {
+  margin-right: 6px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+@media (max-width: 860px) {
+  .focus-distraction-row {
+    flex-wrap: wrap;
+  }
+
+  .focus-distraction-row .input {
+    flex-basis: 100%;
+    order: 3;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * 专注时间 · 迭代 2 · 总览（A7：全部历史 + 分类年度热力图 + 按周展开）
+ *
+ * 三屏是一条线：累计 → 年度分布 → 点某一列展开那一周。
+ * 热力图三行分类图共用同一个横向滚动容器（.heatmap-scroll），列宽才严格对齐；
+ * 左侧星期刻度用 position: sticky; left: 0 钉住，横向滚动时不跟着走。
+ * ------------------------------------------------------------------ */
+
+/* 视图切换用：计时视图被隐藏但**不卸载**——卸载就等于把正在跑的计时丢掉。 */
+.view-hidden {
+  display: none;
+}
+
+.overview {
+  display: grid;
+  gap: 14px;
+}
+
+/* 「← 返回计时」+ 口径说明。 */
+.overview-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.overview-hint {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.overview-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 面板标题自带 margin-bottom，再叠一层 gap 会多出 12px。 */
+.overview-panel .panel-title {
+  margin-bottom: 0;
+}
+
+/* 累计总时长：全站唯一允许超过 24 小时的数字。比 .timer-time 小一档，
+   别抢计时器大字的视觉位阶。 */
+.overview-total {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-meta {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 年份切换器：只列有记录的年份。 */
+.heatmap-year {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.heatmap-year strong {
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 58px;
+  text-align: center;
+}
+
+.heatmap-year .btn-icon:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.heatmap {
+  display: grid;
+  gap: 8px;
+}
+
+/* 三行分类图共用的横向滚动容器：一起滚，列才不会错位。 */
+.heatmap-scroll {
+  display: grid;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.heatmap-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* 行标题必须写出该分类自己的单日最大值，否则会被误读成左右图颜色等价。 */
+.heatmap-label {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 176px;
+  padding: 2px 8px 2px 0;
+  background: var(--surface);
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.heatmap-label-text {
+  white-space: nowrap;
+}
+
+.heatmap-cells {
+  display: flex;
+  gap: 2px;
+}
+
+/* 时间轴（月份）：左内边距 = .heatmap-label 的宽度，才能和下面的格子列对齐。
+   月份文字画在 SVG 里（可旋转），超出格子宽度的部分不会被裁。 */
+.heatmap-months {
+  padding-left: 184px;
+  height: 18px;
+}
+
+.heatmap-months-svg {
+  display: block;
+  overflow: visible;
+}
+
+.heatmap-month-text {
+  font-size: 10px;
+  fill: var(--text-3);
+  text-anchor: start;
+}
+
+.heatmap-week {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* stikcy 要放在「星期整列」这个容器上：它的包含块是整行 .heatmap-cells
+   （宽度 = 全部 53 周），所以能钉住；如果只写在 14px 宽的 .heatmap-axis 上，
+   包含块只有 14px，横向滚动时会跟着格子一起走掉。背景挡住从下面滑过的格子。 */
+.heatmap-weekdays {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* 星期刻度：横向滚动时钉在左边不跟着走。 */
+.heatmap-axis {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  width: 14px;
+  height: 11px;
+  line-height: 11px;
+  font-size: 9px;
+  text-align: center;
+  color: var(--text-3);
+  background: var(--surface);
+}
+
+/* 列标题：11px 的窄列放不下日期，这一格只是个可点区域；
+   完整日期在 title 和格子自己的 title 里。 */
+.heatmap-weeklabel {
+  width: 11px;
+  height: 14px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.heatmap-weeklabel:hover {
+  background: var(--accent-soft);
+}
+
+.heatmap-weeklabel.active {
+  background: var(--accent);
+}
+
+/* 单个格子：固定 11×11 + 2px 间距。空白天显示浅底，不写死颜色。
+   有记录的日子由内联 style 给 background + opacity（按该分类最大值缩放）。 */
+.heatmap-cell {
+  width: 11px;
+  height: 11px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 2px;
+  background: var(--surface-muted);
+  box-shadow: inset 0 0 0 1px var(--border);
+  cursor: pointer;
+}
+
+.heatmap-cell:hover {
+  box-shadow:
+    inset 0 0 0 1px var(--accent),
+    0 0 0 2px var(--accent-soft);
+}
+
+.heatmap-cell.active {
+  box-shadow:
+    inset 0 0 0 1px var(--accent),
+    0 0 0 2px var(--accent-soft);
+}
+
+/* 不属于该年的日期：占位但不可见，整列仍然对齐。 */
+.heatmap-cell.blank {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.heatmap-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* 第 3 屏：展开的那一周。7 行永远都在，没有记录的那天用 —。 */
+.week-expand-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.week-expand-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.week-expand-total {
+  font-size: 13px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.week-expand-slices {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-2);
+  flex-wrap: wrap;
+}
+
+.week-expand-slice {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.week-expand-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.week-expand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+}
+
+.week-expand-day {
+  flex: none;
+  min-width: 108px;
+  font-size: 13px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.week-expand-row .week-expand-slices {
+  flex: 1;
+  min-width: 0;
+}
+
+.week-expand-daytotal {
+  flex: none;
+  min-width: 54px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 空态里的图标与文案排一行。 */
+.overview-panel .empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+@media (max-width: 860px) {
+  .overview-total {
+    font-size: 28px;
+  }
+
+  /* 窄窗口下把行标题收窄，给格子留出更多可见列。 */
+  .heatmap-label {
+    min-width: 128px;
+  }
+
+  /* 月份轴让出的左边距必须跟着行标题一起收窄，否则和格子的列错位。 */
+  .heatmap-months {
+    padding-left: 136px;
+  }
+
+  .week-expand-day {
+    min-width: 92px;
+  }
+
+  .week-expand-row {
+    flex-wrap: wrap;
+  }
+
+  .week-expand-row .week-expand-slices {
+    flex-basis: 100%;
+    order: 3;
+  }
+}
